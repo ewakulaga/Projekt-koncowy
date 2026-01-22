@@ -77,7 +77,10 @@ void update_swarm(Swarm *s, map *mapp) {
 
 void free_swarm(Swarm *s) {
     if (!s) return;
-    free(s->particles);
+
+    if(s->particles)
+	    free(s->particles);
+
     free(s);
 }
 

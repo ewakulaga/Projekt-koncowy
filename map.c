@@ -39,7 +39,7 @@ map* load_map(const char *plik) {
     for(int y=0; y < mapp->wysokosc; y++ ) {   
         mapp->value[y] = malloc(mapp->szerokosc * sizeof(double));
 
-        if(mapp->value == NULL) {
+        if(mapp->value[y] == NULL) {
             for(int i=0; i<y; i++)
                 free(mapp->value[i]);
             free(mapp->value);
@@ -70,7 +70,7 @@ double get_value(map *mapp, int x, int y) {
     if(mapp==NULL) 
         return -100000.0;
 
-    if(x < 0 || x > mapp->szerokosc || y < 0 || y > mapp->wysokosc)
+    if(x < 0 || x >= mapp->szerokosc || y < 0 || y >= mapp->wysokosc)
         return -100000.0;
 
     return mapp->value[y][x];
@@ -85,5 +85,8 @@ void free_map(map *mapp) {
     for(int i = 0; i < mapp->wysokosc; i++){
         free(mapp->value[i]);
         } 
-    }
+    free(mapp->value);
 }  
+free(mapp);
+}
+

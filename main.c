@@ -73,6 +73,10 @@ printf("x = %.3f\n", swarm->gbest_x);
 printf("y = %.3f\n", swarm->gbest_y);
 printf("wartość = %.3f\n", swarm->gbest_value);
 
-}
 
+free_swarm(swarm);
+free_map(mapp);
+return 0;
+
+}
 

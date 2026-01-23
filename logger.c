@@ -11,11 +11,12 @@ int open_logger(const char *plik) {
 
     if(p==NULL) {
         printf("nie mozna otworzyc pliku");
-        return 0;
+        return 1;
     }
 
     fprintf(p, "iteracja,czastka,x,y\n");
-    return 1;
+    fclose(p);
+    return 0;
 }
 
 

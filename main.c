@@ -22,7 +22,7 @@ const char *map_file = argv[1];
 int particles = DEFAULT_PARTICLE;
 int iteracja = DEFAULT_ITERATION;
 int logg = 0;
-const char *config_file = NULL;
+const char *config_filename = NULL;
 
 
 for(int i = 2; i<argc; i++) {
@@ -33,7 +33,7 @@ for(int i = 2; i<argc; i++) {
         iteracja = atoi(argv[++i]);
     }
     else if(strcmp(argv[i], "-c")==0 && i+1<argc) {
-        config_file = argv[++i];
+        config_filename = argv[++i];
     }
     else if(strcmp(argv[i], "-n")==0 && i+1<argc) {
         iteracja = atoi(argv[++i]);
@@ -44,6 +44,10 @@ else {
     return 1;
     }
 }
+
+printf("Mapa: %s\n", map_file);
+printf("Konfiguracja roju: liczba czastek = %d, liczba iteracji = %d, logowanie = %d\n", particles, iteracja, logg);
+
 
 map *mapp = load_map(map_file);
 
@@ -59,6 +63,33 @@ if(!swarm) {
     free(mapp);
     return 1;
 }
+
+
+double pso_w = 0.5;
+double pso_c1 = 1.0;
+double pso_c2 = 1.0;
+
+if(config_filename != NULL){
+    FILE *config_file = fopen(config_filename, "r");
+    if(config_file){
+        if(fscanf(config_file, "%lf %lf %lf", &pso_w, &pso_c1, &pso_c2) == 3){
+            printf("Parametry PSO wczytane z pliku: w=%.2f, c1=%.2f, c2=%.2f\n", pso_w, pso_c1, pso_c2);
+        } else {
+            fprintf(stderr, "Blad: Niepoprawny format pliku konfiguracyjnego: %s\n", config_filename);
+            printf("Uzycie domyslnych parametrow PSO: w=0.5, c1=1.0, c2=1.0\n");
+        }
+        fclose(config_file);
+    }
+    else{
+        fprintf(stderr, "Blad: Nie mozna otworzyc pliku konfiguracyjnego: %s\n", config_filename);
+        printf("Uzycie domyslnych parametrow PSO: w=0.5, c1=1.0, c2=1.0\n");
+    }
+}
+
+ if(logg > 0){
+        open_logger("pso_log.csv");
+        printf("Plik logow zainicjalizowany: pso_log.csv\n");
+    }
 
 for(int i = 0; i < iteracja; i++) {
     update_swarm(swarm, mapp);
